@@ -1,4 +1,4 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { bigint, int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -25,4 +25,17 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
-// TODO: Add your tables here
+// Game scores table for race results
+export const gameScores = mysqlTable("game_scores", {
+  id: int("id").autoincrement().primaryKey(),
+  playerName: varchar("playerName", { length: 64 }).notNull().default("Player"),
+  course: varchar("course", { length: 32 }).notNull(), // grassland, snow, castle
+  difficulty: varchar("difficulty", { length: 16 }).notNull(), // easy, normal, hard
+  position: int("position").notNull(), // final race position (1-8)
+  raceTimeMs: bigint("raceTimeMs", { mode: "number" }).notNull(), // race time in milliseconds
+  totalLaps: int("totalLaps").notNull().default(3),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type GameScore = typeof gameScores.$inferSelect;
+export type InsertGameScore = typeof gameScores.$inferInsert;
